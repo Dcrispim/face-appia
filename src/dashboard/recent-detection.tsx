@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Card,
   CardContent,
@@ -8,14 +10,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
 import { getMoodColor } from "@/lib/utils";
+import { useLiveCamera } from "../context/live-camera-context";
 
-type RecentDetectionsTableProps = {
-  detections: Detection[];
-};
-
-export default function RecentDetectionsTable({
-  detections,
-}: RecentDetectionsTableProps) {
+export default function RecentDetectionsTable() {
+  const { historyDetections } = useLiveCamera();
   return (
     <Card>
       <CardHeader>
@@ -39,7 +37,7 @@ export default function RecentDetectionsTable({
               </tr>
             </thead>
             <tbody>
-              {detections.map((detection) => (
+              {historyDetections.map((detection) => (
                 <tr key={detection.id} className="border-b hover:bg-muted/50">
                   <td className="py-3 px-4 font-medium">{detection.name}</td>
                   <td className="py-3 px-4">{detection.age}</td>

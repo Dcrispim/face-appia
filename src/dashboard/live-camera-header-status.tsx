@@ -1,4 +1,5 @@
-import { useLiveCamera } from "@/dashboard/live-camera-context";
+'use client'
+import { useLiveCamera } from "@/context/live-camera-context";
 import Timer from "@/components/timer";
 
 export default function LiveCameraHeaderStatus() {

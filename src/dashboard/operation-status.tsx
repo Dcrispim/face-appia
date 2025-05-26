@@ -1,3 +1,4 @@
+'use client'
 import Timer from "@/components/timer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Zap } from "lucide-react";

@@ -1,7 +1,8 @@
+'use client'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Clock, TrendingUp, Users } from "lucide-react";
-import { useLiveCamera } from "@/dashboard/live-camera-context";
+import { useLiveCamera } from "@/context/live-camera-context";
 
 export default function LiveCameraAnalyticsCards() {
   const { totalPeople, facesPerHour } = useLiveCamera();

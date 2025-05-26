@@ -1,6 +1,7 @@
+'use client'
 import { cn, getMoodColor } from "@/lib/utils";
 import { Camera } from "lucide-react";
-import { useLiveCamera } from "./live-camera-context";
+import { useLiveCamera } from "../context/live-camera-context";
 
 export default function LiveCamera() {
   const { currentDetections: detections } = useLiveCamera();
