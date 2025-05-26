@@ -12,9 +12,9 @@ declare type Detection = {
   h?: number;
   descriptor: Float32Array;
   distance?: number;
-  leftEye?: { x: number, y: number },
-  rightEye?: { x: number, y: number },
-  eyeDistance?: number,
+  leftEye?: { x: number; y: number };
+  rightEye?: { x: number; y: number };
+  eyeDistance?: number;
 };
 
 declare type DetectionMap = Record<string, Detection>;

@@ -21,7 +21,7 @@ export default function FacialRecognitionDashboard() {
                 Real-time monitoring and analytics
               </p>
             </div>
-					  <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <Timer />
             </div>
           </div>
@@ -40,7 +40,7 @@ export default function FacialRecognitionDashboard() {
           </div>
 
           {/* Recent Detections Table */}
-				  <RecentDetectionsTable />
+          <RecentDetectionsTable />
 
           <TechnicalInformation />
 

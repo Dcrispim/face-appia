@@ -11,23 +11,22 @@ import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
 import { getMoodColor } from "@/lib/utils";
 import { useLiveCamera } from "../context/live-camera-context";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function RecentDetectionsTable() {
   const { historyDetections } = useLiveCamera();
   const [timer, setTimer] = useState(0);
-  const [displayedDetections, setDisplayedDetections] = useState(historyDetections);
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const displayedDetections = useMemo(
+    () => ({ ...historyDetections }),
+    [timer],
+  );
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimer(t => t + 1);
+      setTimer((t) => t + 1);
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    setDisplayedDetections({ ...historyDetections });
-  }, [timer]);
 
   const historyDetectionsEntries = Object.entries(displayedDetections);
   return (

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { cn, getMoodColor } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 import { useLiveCamera } from "../context/live-camera-context";
@@ -11,17 +11,31 @@ function estimateDistance(eyeDistance: number): number {
   const distance_known = 30; // cm, calibration distance
   const eye_pixel_known = 230; // px, eye pixel measurement at calibration
 
-
   return (distance_known * eye_pixel_known) / eyeDistance;
 }
 
 // Handles drawing on the canvas using face-api.js
-function handleCanvasDetections(ctx: CanvasRenderingContext2D, faceapi: typeof import('face-api.js'), detections: any[], dims: any, estimateDistance: (eyeDistance: number) => number) {
+function handleCanvasDetections(
+  ctx: CanvasRenderingContext2D,
+  faceapi: typeof import("face-api.js"),
+  detections: any[],
+  dims: any,
+  estimateDistance: (eyeDistance: number) => number,
+) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  faceapi.draw.drawDetections(ctx.canvas, faceapi.resizeResults(detections, dims));
-  faceapi.draw.drawFaceLandmarks(ctx.canvas, faceapi.resizeResults(detections, dims));
-  faceapi.draw.drawFaceExpressions(ctx.canvas, faceapi.resizeResults(detections, dims));
-  detections.forEach(det => {
+  faceapi.draw.drawDetections(
+    ctx.canvas,
+    faceapi.resizeResults(detections, dims),
+  );
+  faceapi.draw.drawFaceLandmarks(
+    ctx.canvas,
+    faceapi.resizeResults(detections, dims),
+  );
+  faceapi.draw.drawFaceExpressions(
+    ctx.canvas,
+    faceapi.resizeResults(detections, dims),
+  );
+  detections.forEach((det) => {
     if (det.landmarks) {
       const landmarks = det.landmarks.positions;
       const leftEye = {
@@ -33,26 +47,29 @@ function handleCanvasDetections(ctx: CanvasRenderingContext2D, faceapi: typeof i
         y: (landmarks[42].y + landmarks[45].y) / 2,
       };
       const eyeDistance = Math.sqrt(
-        Math.pow(leftEye.x - rightEye.x, 2) + Math.pow(leftEye.y - rightEye.y, 2)
+        Math.pow(leftEye.x - rightEye.x, 2) +
+          Math.pow(leftEye.y - rightEye.y, 2),
       );
       const estDist = estimateDistance(eyeDistance);
       ctx.save();
-      ctx.font = '16px Arial';
-      ctx.fillStyle = 'yellow';
-      ctx.strokeStyle = 'black';
+      ctx.font = "16px Arial";
+      ctx.fillStyle = "yellow";
+      ctx.strokeStyle = "black";
       ctx.lineWidth = 3;
       const box = det.detection.box;
       const label = `${estDist.toFixed(1)} cm`;
       const textWidth = ctx.measureText(label).width;
-      ctx.strokeText(label, box.x + (box.width / 2) - (textWidth / 2), box.y - 8);
-      ctx.fillText(label, box.x + (box.width / 2) - (textWidth / 2), box.y - 8);
+      ctx.strokeText(label, box.x + box.width / 2 - textWidth / 2, box.y - 8);
+      ctx.fillText(label, box.x + box.width / 2 - textWidth / 2, box.y - 8);
       ctx.restore();
     }
   });
 }
 
-const findMatchingFace = (descriptor: Float32Array, history: [string, Detection][]): string | null => {
-
+const findMatchingFace = (
+  descriptor: Float32Array,
+  history: [string, Detection][],
+): string | null => {
   let minDistance = 0.6; // tweak this threshold
   let matchedName: string | null = null;
 
@@ -82,11 +99,19 @@ function getDetectionsState({
       age: det.age ? Math.round(det.age) : 0,
       time: new Date().toLocaleTimeString(),
       confidence: det.detection.score,
-      mood: det.expressions && typeof det.expressions === 'object' ? Object.entries(det.expressions).sort((a, b) => (b[1] as number) - (a[1] as number))[0][0] : "Neutral",
+      mood:
+        det.expressions && typeof det.expressions === "object"
+          ? Object.entries(det.expressions).sort(
+              (a, b) => (b[1] as number) - (a[1] as number),
+            )[0][0]
+          : "Neutral",
       gender: det.gender || "Unknown",
-      descriptor: det.descriptor
+      descriptor: det.descriptor,
     } as Detection;
-    const matchedName = findMatchingFace(det.descriptor, historyDetectionsEntries);
+    const matchedName = findMatchingFace(
+      det.descriptor,
+      historyDetectionsEntries,
+    );
     if (!matchedName) {
       _detection.id = idx;
       _detection.name = `Person ${idx}`;
@@ -97,7 +122,9 @@ function getDetectionsState({
     const width = box.width;
     const height = box.height;
     // Eye landmarks
-    let leftEye = undefined, rightEye = undefined, eyeDistance = undefined;
+    let leftEye = undefined,
+      rightEye = undefined,
+      eyeDistance = undefined;
     if (det.landmarks) {
       const landmarks = det.landmarks.positions;
       leftEye = {
@@ -109,7 +136,8 @@ function getDetectionsState({
         y: (landmarks[42].y + landmarks[45].y) / 2,
       };
       eyeDistance = Math.sqrt(
-        Math.pow(leftEye.x - rightEye.x, 2) + Math.pow(leftEye.y - rightEye.y, 2)
+        Math.pow(leftEye.x - rightEye.x, 2) +
+          Math.pow(leftEye.y - rightEye.y, 2),
       );
     }
     newDetections[_detection.name] = {
@@ -124,7 +152,9 @@ function getDetectionsState({
     };
   });
   // Build updated history
-  const updatedHistory: DetectionMap = { ...Object.fromEntries(historyDetectionsEntries) };
+  const updatedHistory: DetectionMap = {
+    ...Object.fromEntries(historyDetectionsEntries),
+  };
   const baseSize = Object.keys(updatedHistory).length;
   newHistory.forEach((det) => {
     const id = baseSize + det.id;
@@ -132,7 +162,7 @@ function getDetectionsState({
     updatedHistory[name] = {
       ...det,
       id,
-      name: `Person ${id}`
+      name: `Person ${id}`,
     };
   });
   return {
@@ -142,10 +172,18 @@ function getDetectionsState({
 }
 
 export default function LiveCamera() {
-  const { currentDetections, setCurrentDetections, historyDetections, setHistoryDetections, videoRef, loading, setLoading } = useLiveCamera();
+  const {
+    currentDetections,
+    setCurrentDetections,
+    historyDetections,
+    setHistoryDetections,
+    videoRef,
+    loading,
+    setLoading,
+  } = useLiveCamera();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const currentDetectionsEntries = Object.entries(currentDetections)
-  const historyDetectionsEntries = Object.entries(historyDetections)
+  const currentDetectionsEntries = Object.entries(currentDetections);
+  const historyDetectionsEntries = Object.entries(historyDetections);
   useEffect(() => {
     const localVideoRef = videoRef.current;
     const localCanvasRef = canvasRef.current;
@@ -154,7 +192,7 @@ export default function LiveCamera() {
 
     // Load face-api.js models
     const loadModels = async () => {
-      setLoading(true)
+      setLoading(true);
 
       const MODEL_URL = "/weights";
       await Promise.all([
@@ -166,33 +204,43 @@ export default function LiveCamera() {
       ]);
     };
 
-
-
     // Run face detection on the video
     const startDetection = () => {
       if (!localVideoRef || !localCanvasRef) return;
       detectionInterval = setInterval(async () => {
         if (!localVideoRef || localVideoRef.readyState !== 4) return;
-        const detections = await faceapi.detectAllFaces(localVideoRef, new faceapi.TinyFaceDetectorOptions())
+        const detections = await faceapi
+          .detectAllFaces(localVideoRef, new faceapi.TinyFaceDetectorOptions())
           .withFaceLandmarks(true)
           .withFaceDescriptors()
           .withFaceExpressions()
           .withAgeAndGender();
 
         if (!isMounted) return;
-        const dims = faceapi.matchDimensions(localCanvasRef, localVideoRef, true);
-        const ctx = localCanvasRef.getContext('2d');
+        const dims = faceapi.matchDimensions(
+          localCanvasRef,
+          localVideoRef,
+          true,
+        );
+        const ctx = localCanvasRef.getContext("2d");
         if (ctx) {
-          handleCanvasDetection(ctx, faceapi, detections, dims, estimateDistance);
+          handleCanvasDetection(
+            ctx,
+            faceapi,
+            detections,
+            dims,
+            estimateDistance,
+          );
         }
 
         // Use the new getDetectionsState function
-        const { currentDetections: newCurrent, historyDetections: newHistory } = getDetectionsState({
-          detections,
-          historyDetectionsEntries,
-        });
+        const { currentDetections: newCurrent, historyDetections: newHistory } =
+          getDetectionsState({
+            detections,
+            historyDetectionsEntries,
+          });
         setCurrentDetections(newCurrent);
-        setHistoryDetections(prev => {
+        setHistoryDetections((prev) => {
           const merged = { ...prev, ...newHistory };
           const entries = Object.entries(merged);
           const lastFive = entries.slice(-5);
@@ -202,7 +250,7 @@ export default function LiveCamera() {
     };
 
     loadModels().then(() => {
-      setLoading(false)
+      setLoading(false);
 
       // Only start detection after video is playing
       if (localVideoRef) {
@@ -216,19 +264,27 @@ export default function LiveCamera() {
       isMounted = false;
       if (localVideoRef && localVideoRef.srcObject) {
         const tracks = (localVideoRef.srcObject as MediaStream).getTracks();
-        tracks.forEach(track => track.stop());
+        tracks.forEach((track) => track.stop());
       }
       if (detectionInterval) clearInterval(detectionInterval);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setCurrentDetections, videoRef]);
 
   return (
     <div className="relative w-full h-full bg-black rounded-lg overflow-hidden">
       <VideoFeed />
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none"
+      />
       <div className="absolute flex bottom-4 left-4 bg-black/70 text-white px-3 py-2 rounded text-sm">
-        {currentDetectionsEntries.length} faces detected • {
-          loading ? <LoaderIcon className="px-1 animate-spin" /> : `Processing at ${300}ms `}
+        {currentDetectionsEntries.length} faces detected •{" "}
+        {loading ? (
+          <LoaderIcon className="px-1 animate-spin" />
+        ) : (
+          `Processing at ${300}ms `
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useLiveCamera } from "@/context/live-camera-context";
 import Timer from "@/components/timer";
 

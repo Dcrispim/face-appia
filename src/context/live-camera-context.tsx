@@ -1,13 +1,21 @@
-import { RefObject, createContext, useContext, useRef, useState, ReactNode, Dispatch, SetStateAction } from "react";
-
+import {
+  RefObject,
+  createContext,
+  useContext,
+  useRef,
+  useState,
+  ReactNode,
+  Dispatch,
+  SetStateAction,
+} from "react";
 
 interface LiveCameraContextType {
-  loading: boolean,
-  setLoading: Dispatch<SetStateAction<boolean>>
+  loading: boolean;
+  setLoading: Dispatch<SetStateAction<boolean>>;
   currentDetections: DetectionMap;
-  setCurrentDetections: Dispatch<SetStateAction<DetectionMap>>
+  setCurrentDetections: Dispatch<SetStateAction<DetectionMap>>;
   historyDetections: DetectionMap;
-  setHistoryDetections: Dispatch<SetStateAction<DetectionMap>>
+  setHistoryDetections: Dispatch<SetStateAction<DetectionMap>>;
   totalPeople: number;
   setTotalPeople: (n: number) => void;
   facesPerHour: number;
@@ -21,7 +29,6 @@ const LiveCameraContext = createContext<LiveCameraContextType | undefined>(
   undefined,
 );
 
-
 export function useLiveCamera() {
   const ctx = useContext(LiveCameraContext);
   if (!ctx)
@@ -32,9 +39,7 @@ export function useLiveCamera() {
 export function LiveCameraProvider({ children }: { children: ReactNode }) {
   const [currentDetections, setCurrentDetections] = useState<DetectionMap>({});
   const [loading, setLoading] = useState<boolean>(false);
-  const [historyDetections, setHistoryDetections] = useState<DetectionMap>(
-    {},
-  );
+  const [historyDetections, setHistoryDetections] = useState<DetectionMap>({});
   const [totalPeople, setTotalPeople] = useState(1247);
   const [facesPerHour, setFacesPerHour] = useState(156);
   const [isLive, setIsLive] = useState(true);

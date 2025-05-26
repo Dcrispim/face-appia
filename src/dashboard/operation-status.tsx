@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import Timer from "@/components/timer";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLiveCamera } from "@/context/live-camera-context";
@@ -6,7 +6,6 @@ import { Zap } from "lucide-react";
 import React from "react";
 
 const OperationStatus: React.FC = () => {
-
   return (
     <Card>
       <CardContent className="py-4">

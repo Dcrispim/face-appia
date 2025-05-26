@@ -20,7 +20,7 @@ export default function VideoFeed() {
     getWebcam();
     return () => {
       if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
       }
     };
   }, [videoRef]);
