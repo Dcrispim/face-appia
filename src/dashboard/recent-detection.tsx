@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   Card,
@@ -11,9 +11,25 @@ import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
 import { getMoodColor } from "@/lib/utils";
 import { useLiveCamera } from "../context/live-camera-context";
+import { useEffect, useState } from "react";
 
 export default function RecentDetectionsTable() {
   const { historyDetections } = useLiveCamera();
+  const [timer, setTimer] = useState(0);
+  const [displayedDetections, setDisplayedDetections] = useState(historyDetections);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer(t => t + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    setDisplayedDetections({ ...historyDetections });
+  }, [timer]);
+
+  const historyDetectionsEntries = Object.entries(displayedDetections);
   return (
     <Card>
       <CardHeader>
@@ -37,9 +53,9 @@ export default function RecentDetectionsTable() {
               </tr>
             </thead>
             <tbody>
-              {historyDetections.map((detection) => (
+              {historyDetectionsEntries.map(([name, detection]) => (
                 <tr key={detection.id} className="border-b hover:bg-muted/50">
-                  <td className="py-3 px-4 font-medium">{detection.name}</td>
+                  <td className="py-3 px-4 font-medium">{name}</td>
                   <td className="py-3 px-4">{detection.age}</td>
                   <td className="py-3 px-4 font-mono text-sm">
                     {detection.time}
