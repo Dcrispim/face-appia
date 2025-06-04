@@ -1,0 +1,10 @@
+{
+    "preview": "https://raw.githubusercontent.com/Dcrispim/face-appia/refs/heads/main/public/portifolio/preview.png",
+    "description":{
+        "en": "Face Appia is a Next.js 14 application for real-time face detection, analytics, and mood estimation using face-api.js and Firebase.",
+        "pt": "Face Appia é uma aplicação Next.js para deteção de rostos em tempo real, análise e estimativa de humor utilizando face-api.js e Firebase."
+    },
+    "title": "Face Appia",
+    "stack":["React", "TypeScript", "Nextjs", "Tailwindcss","Firebase", "Face-API.js"],
+    "link":"https://face-appia-step2.vercel.app/"
+}
